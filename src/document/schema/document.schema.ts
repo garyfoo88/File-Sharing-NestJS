@@ -18,6 +18,7 @@ const DocumentSchema = new mongoose.Schema({
   date_created: {
     type: Date,
     required: true,
+    index: true
   },
   days_to_delete: {
     type: Number,
