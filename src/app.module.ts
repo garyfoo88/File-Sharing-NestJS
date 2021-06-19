@@ -10,7 +10,7 @@ import { DocumentModule } from './document/document.module';
     ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       useFactory: () => ({
-        uri: "mongodb+srv://test:zzcjZysLNqoUbfyq@cluster0.fu0zw.mongodb.net/test?authSource=admin&replicaSet=atlas-13354n-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true",
+        uri: process.env.MONGO_URL,
         useCreateIndex: true,
       }),
     }),
