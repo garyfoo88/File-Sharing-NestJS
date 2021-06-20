@@ -17,7 +17,7 @@ export class DocumentService {
     file_type: string,
     days_to_delete: number,
     password: string,
-    encrypted_file: string,
+    encrypted_file: Object,
     encrypted_file_size: number,
   ) {
     const dateCreatedInEpoch = getUnixTimestamp();

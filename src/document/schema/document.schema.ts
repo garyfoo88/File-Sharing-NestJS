@@ -29,7 +29,7 @@ const DocumentSchema = new mongoose.Schema({
     required: false,
   },
   encrypted_file: {
-    type: String,
+    type: Object,
     required: true,
   },
   deletion_key: {

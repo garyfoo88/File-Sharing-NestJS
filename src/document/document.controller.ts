@@ -13,7 +13,7 @@ export class DocumentController {
     @Body('file_type') fileType: string,
     @Body('days_to_delete') daysDelete: number,
     @Body('password') password: string,
-    @Body('encrypted_file') encryptedFile: string,
+    @Body('encrypted_file') encryptedFile: Object,
     @Body('file_size') fileSize: number,
   ) {
     try {
@@ -53,7 +53,7 @@ export class DocumentController {
     try{
       const id = params['id'];
       const deletion_key = params['deletion_key'];
-      
+
     } catch(err) {
 
     }

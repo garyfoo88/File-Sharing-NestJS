@@ -19,7 +19,7 @@ interface Document {
     date_created: Date;
     days_to_delete?: number;
     password?: string;
-    encrypted_file: string;
+    encrypted_file: Object;
     deletion_key: string;
     encrypted_file_size: number;
   }
