@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Post, Request, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, Res, Query } from '@nestjs/common';
 import { DocumentService } from './document.service';
 import { getUnixTimestamp } from 'src/utils/timestamp';
 @Controller('document')
 export class DocumentController {
   constructor(private readonly documentService: DocumentService) {}
-  
 
   @Post('upload')
   async uploadDocument(
@@ -15,21 +14,37 @@ export class DocumentController {
     @Body('days_to_delete') daysDelete: number,
     @Body('password') password: string,
     @Body('encrypted_file') encryptedFile: string,
-    @Body('deletion_key') deletionKey: string,
     @Body('file_size') fileSize: number,
   ) {
-    
-    const doc = this.documentService.uploadDocumentToDb(
-      fileName,
-      fileType,
-      daysDelete,
-      password,
-      encryptedFile,
-      deletionKey,
-      fileSize,
-    );
+    try {
+      const doc = await this.documentService.uploadDocumentToDb(
+        fileName,
+        fileType,
+        daysDelete,
+        password,
+        encryptedFile,
+        fileSize,
+      );
 
-    res.status(201).send(doc)
-    return
+      const response = { id: doc[0].id, key: doc[0].deletion_key };
+      res.status(201).send(response);
+      return;
+    } catch (err) {
+      res.status(400).send({ error: err });
+      return;
+    }
+  }
+
+  @Get('download')
+  async downloadEncryptedFile(@Res() res, @Query() params) {
+    try {
+      const id = params['id'];
+      const password = params['password'];
+      const doc = await this.documentService.downloadFileFromDb(id, password);
+      res.status(200).send({ doc });
+    } catch (err) {
+      res.status(400).send({ error: err });
+      return;
+    }
   }
 }
