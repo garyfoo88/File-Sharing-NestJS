@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, Res, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, Res, Query, Delete } from '@nestjs/common';
 import { DocumentService } from './document.service';
 import { getUnixTimestamp } from 'src/utils/timestamp';
 @Controller('document')
@@ -45,6 +45,17 @@ export class DocumentController {
     } catch (err) {
       res.status(400).send({ error: err });
       return;
+    }
+  }
+
+  @Delete('delete')
+  async deleteDocument(@Res() res, @Query() params) {
+    try{
+      const id = params['id'];
+      const deletion_key = params['deletion_key'];
+      
+    } catch(err) {
+
     }
   }
 }

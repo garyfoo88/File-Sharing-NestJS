@@ -63,6 +63,18 @@ export class DocumentService {
       throw new NotFoundException('File not found');
     }
 
+    //if expiry date is more than 0
+    if (doc.days_to_delete) {
+      const isFileExpired = await this.checkIfDocPassedExpiry(doc.days_to_delete, doc.date_created);
+
+      //Delete document if file is pass expiry
+      if (isFileExpired) {
+        await this.documentModel.findOneAndDelete({ id });
+        session.endSession();
+        return 'Document has been deleted';
+      }
+    }
+
     if (password === '' && doc.password === '') {
       session.endSession();
       return { document: doc.encrypted_file };
@@ -76,6 +88,30 @@ export class DocumentService {
 
     session.endSession();
     return { document: doc.encrypted_file };
+  }
+
+  //Function to check if document is passed expiry
+  async checkIfDocPassedExpiry(days_expired: number, created_date: Date) {
+    const dateCreatedInEpoch = getUnixTimestamp();
+    const dateNow = new Date(dateCreatedInEpoch * 1000);
+
+    const newDate1 = new Date(
+      created_date.getFullYear(),
+      created_date.getMonth(),
+      created_date.getDate(),
+    );
+    const newDate2 = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate());
+
+    const millisecondsPerDay = 1000 * 60 * 60 * 24;
+    const millisBetween = newDate2.getTime() - newDate1.getTime();
+    const days = millisBetween / millisecondsPerDay;
+    const file_created_days = Math.abs(days);
+
+    if (file_created_days >= days_expired) {
+      return true;
+    }
+
+    return false;
   }
 
   processHexString(hexString: string) {
